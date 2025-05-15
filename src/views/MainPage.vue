@@ -34,9 +34,9 @@
         <button class="search-btn" @click="handleSearch">检索</button>
       </div>
       <div class="logo-container">
-        <img src="@/assets/riseLogo.png" class="logo">
+        <!-- <img src="@/assets/riseLogo.png" class="logo"> -->
         <img src="@/assets/logo1.png" class="logo">
-        
+        <span class="beta-tag">@Beta 1.0.0</span>
       </div>
     </header>
 
@@ -589,6 +589,16 @@ const handleLogout = () => {
   }
 }
 
+.beta-tag {
+  color: #ff9800;       /* 橙色文字 */
+  background-color: #fffde7; /* 浅黄色背景 */
+  padding: 4px 8px;     /* 内边距 */
+  border-radius: 12px;  /* 圆角 */
+  font-size: 0.9em;     /* 字体大小 */
+  margin-left: 8px;     /* 与Logo间距 */
+  font-weight: 500;     /* 中等粗体 */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* 轻微阴影 */
+}
 /* 主体内容区域 */
 .content {
   background: linear-gradient(
