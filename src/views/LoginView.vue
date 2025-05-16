@@ -194,8 +194,12 @@ const handleLogin = async () => {
     formData.append('password', loginForm.value.password)
 
     const url = isEmailLogin.value 
-      ? 'http://localhost:8081/CPDFR/user/loginByEmail'
-      : 'http://localhost:8081/CPDFR/user/loginByUsername'
+    //生产环境切换
+      ? 'https://www.rise-swu.cn:6565/api/CPDFR/user/loginByEmail'
+      : 'https://www.rise-swu.cn:6565/api/CPDFR/user/loginByUsername'
+      //开发环境测试用
+      // ? 'http://localhost:8081/CPDFR/user/loginByEmail'
+      // : 'http://localhost:8081/CPDFR/user/loginByUsername'
 
     const response = await axios.post(
       url,

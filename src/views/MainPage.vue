@@ -1,5 +1,10 @@
 <template>
   <div class="container">
+    <!-- 全局加载提示 -->
+    <div v-if="showGlobalLoading" class="global-loading">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">内容加载中（首次加载稍慢），请稍候...</div>
+    </div>
     <!-- 顶部导航栏 -->
     <header class="header">
       <div class="menu-container">
@@ -103,7 +108,7 @@
 
 <script  setup>
 
-import { ref, onMounted, watch ,nextTick,onBeforeUnmount} from 'vue';
+import { ref, onMounted, watch ,nextTick,onBeforeUnmount,computed} from 'vue';
 import MarkdownIt from 'markdown-it';
 import mkatex from 'markdown-it-katex';
 import hljs from 'highlight.js';
@@ -140,7 +145,13 @@ const inputPage = ref(1);
 const scale = ref(1);
 const pdfRef = ref(null);
 const pdfKey = ref(0); // 用于强制重新渲染
+const pdfLoaded = ref(false);
 
+
+// 计算全局加载状态
+const showGlobalLoading = computed(() => {
+  return isLoading.value || !pdfLoaded.value;
+});
 
 // Markdown 配置
 const markdownContent = ref('');
@@ -184,7 +195,7 @@ const handleSearch = async () => {
     console.log('发送的关键词数组:', keywords);
     
     const response = await axios.post(
-      'http://localhost:8081/CPDFR/select/byKeyword',
+      'https://www.rise-swu.cn:6565/api/CPDFR/select/byKeyword',
       keywords, // 直接发送数组
       {
         headers: {
@@ -223,6 +234,7 @@ onMounted(() => {
 const handlePdfLoaded = (pdf) => {
   console.log('PDF loaded:', pdf);
   pageCount.value = pdf.numPages;
+  pdfLoaded.value = true; // 添加PDF加载完成标记
   console.log('Total pages:', pageCount.value);
 };
 // 监听当前页码变化同步输入框
@@ -331,6 +343,42 @@ const handleLogout = () => {
   flex-direction: column;
   height: 100vh; /* 改为固定视口高度 */
   overflow: hidden;  /* 新增：防止整个页面滚动 */
+}
+
+.global-loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  backdrop-filter: blur(3px);
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+.loading-text {
+  color: #555;
+  font-size: 1.2em;
+  letter-spacing: 1px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* 顶部导航栏样式 */

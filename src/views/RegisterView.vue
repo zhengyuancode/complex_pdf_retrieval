@@ -44,6 +44,16 @@
               />
             </el-form-item>
 
+            <el-form-item label="确认密码" prop="passwordConfirm">
+              <el-input 
+                v-model="registerForm.passwordConfirm" 
+                type="password" 
+                placeholder="请再次输入密码" 
+                show-password
+                :prefix-icon="Lock"
+              />
+          </el-form-item>
+
             <el-form-item label="邀请码" prop="inviteCode">
               <el-input 
                 v-model="registerForm.inviteCode" 
@@ -118,6 +128,7 @@ const registerForm = ref({
   username: '',
   email: '',
   password: '',
+  passwordConfirm: '',
   inviteCode: ''
 })
 // 验证规则
@@ -148,12 +159,17 @@ const rules = {
       trigger: 'blur'
     }
   ],
-  inviteCode: [
-    { required: true, message: '请输入邀请码', trigger: 'blur' },
-    { 
-      pattern: /^[A-Z0-9]{6}$/,
-      message: '邀请码格式不正确（6位大写字母和数字）',
-      trigger: 'blur'
+  passwordConfirm: [
+    { required: true, message: '请确认密码', trigger: 'blur' },
+    {
+      validator: (rule, value, callback) => {
+        if (value !== registerForm.value.password) {
+          callback(new Error('两次输入密码不一致'))
+        } else {
+          callback()
+        }
+      },
+      trigger: ['blur', 'change']
     }
   ]
 }
@@ -217,10 +233,16 @@ const handleRegister = async () => {
     // 简单前端验证
     if (!registerForm.value.username || 
         !registerForm.value.email || 
-        !registerForm.value.password) {
+        !registerForm.value.password||
+        !registerForm.value.passwordConfirm) {
         errorMsg.value = '请填写所有必填字段'
         resetVerification()
         return
+    }
+    if (registerForm.value.password !== registerForm.value.passwordConfirm) {
+      errorMsg.value = '两次输入密码不一致'
+      resetVerification()
+      return
     }
     if(!registerForm.value.inviteCode){
         errorMsg.value = '请联系管理员获取邀请码'
@@ -237,7 +259,10 @@ const handleRegister = async () => {
     
     try {
         const response = await axios.post(
-        'http://localhost:8081/CPDFR/user/register',
+          //生产环境用
+        'https://www.rise-swu.cn:6565/api/CPDFR/user/register',
+        //开发环境用
+        // 'http://localhost:8081/CPDFR/user/register',
         {
             username: registerForm.value.username,
             email: registerForm.value.email,
@@ -253,7 +278,7 @@ const handleRegister = async () => {
         if (response.data == "注册成功") {
         router.push('/login')
         } else {
-        errorMsg.value = response.data.message || '注册失败'
+        errorMsg.value = response.data || '用户名或邮箱已存在，注册失败'
         resetVerification()
         }
     } catch (error) {
@@ -301,18 +326,18 @@ const resetVerification = () => {
 .login-form {
   width: 100%;
   max-width: 400px;
-  padding: 30px;
+  padding: 10px;
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 /* Logo样式 */
 .logo-container {
   text-align: center;
-  margin: 20px 0 30px;
+  /* margin: 20px 0 30px; */
 }
 
 .logo-image {
-  width: 120px;  /* 推荐尺寸 */
+  width: 100px;  /* 推荐尺寸 */
   height: auto;  /* 保持原始比例 */
   max-width: 100%;  /* 防止溢出 */
   transition: transform 0.3s ease;  /* 添加悬停动画 */
