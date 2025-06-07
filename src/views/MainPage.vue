@@ -41,7 +41,7 @@
       <div class="logo-container">
         <!-- <img src="@/assets/riseLogo.png" class="logo"> -->
         <img src="@/assets/logo1.png" class="logo">
-        <span class="beta-tag">@Beta 1.0.0</span>
+        <span class="beta-tag">@Beta 1.1.0</span>
       </div>
     </header>
 
@@ -195,7 +195,10 @@ const handleSearch = async () => {
     console.log('发送的关键词数组:', keywords);
     
     const response = await axios.post(
+      //生产环境用
       'https://www.rise-swu.cn:6565/api/CPDFR/select/byKeyword',
+      //开发环境用
+      // 'http://localhost:8081/CPDFR/select/byKeyword',
       keywords, // 直接发送数组
       {
         headers: {
@@ -885,7 +888,6 @@ input:invalid {
   font-weight: 500;
   color: #2c3e50;
   font-size: 14px;
-  -moz-appearance: textfield;
 }
 
 .page-input::-webkit-outer-spin-button,

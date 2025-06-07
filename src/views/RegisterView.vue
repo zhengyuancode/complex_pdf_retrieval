@@ -303,7 +303,7 @@ const resetVerification = () => {
 
 <style scoped>
 .elcontainer{
-        height: 100vh;
+      height: 100vh;
         background: linear-gradient(
             135deg, 
             rgba(230, 247, 255, 0.9) 50%,  /* 浅蓝色 */

@@ -28,7 +28,6 @@ const routes = [
       requiresAuth: true
     }
   },
-  
   {
     path: '/',
     redirect: '/login'
